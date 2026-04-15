@@ -1,10 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Home</title>
-  <link rel="stylesheet" href="asset/css/styles.css" />
+  <title>Inicio - Sistema de Proyectos</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
   <style>
     .home-page {
       min-height: 100vh;
@@ -51,6 +52,8 @@
       font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
+      width: 100%;
+      transition: background 0.25s ease;
     }
 
     .logout-btn:hover {
@@ -61,38 +64,21 @@
 <body>
   <main class="home-page">
     <section class="home-card">
-      <h1>Inicio</h1>
+      <h1>¡Hola, {{ user.username }}!</h1>
       <p>Has iniciado sesión correctamente.</p>
 
-      <div class="home-user" id="userInfo"></div>
+      <div class="home-user">
+        <p><strong>ID de sistema:</strong> {{ user.id }}</p>
+        <p><strong>Usuario:</strong> {{ user.username }}</p>
+        <p><strong>Correo:</strong> {{ user.email|default:"No registrado" }}</p>
+        <p><strong>Último acceso:</strong> {{ user.last_login|date:"d/m/Y H:i" }}</p>
+      </div>
 
-      <button id="logoutBtn" class="logout-btn">Cerrar sesión</button>
+      <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="logout-btn">Cerrar sesión</button>
+      </form>
     </section>
   </main>
-
-  <script>
-    const isAuthenticated = localStorage.getItem("isAuthenticated");
-    const user = JSON.parse(localStorage.getItem("user"));
-
-    if (isAuthenticated !== "true" || !user) {
-      window.location.href = "index.html";
-    }
-
-    const userInfo = document.getElementById("userInfo");
-    const logoutBtn = document.getElementById("logoutBtn");
-
-    userInfo.innerHTML = `
-      <p><strong>ID:</strong> ${user.id}</p>
-      <p><strong>Correo:</strong> ${user.email}</p>
-      <p><strong>Nombres:</strong> ${user.nombres}</p>
-      <p><strong>Apellidos:</strong> ${user.apellidos}</p>
-    `;
-
-    logoutBtn.addEventListener("click", () => {
-      localStorage.removeItem("isAuthenticated");
-      localStorage.removeItem("user");
-      window.location.href = "index.html";
-    });
-  </script>
 </body>
 </html>
