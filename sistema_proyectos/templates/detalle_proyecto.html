@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Detalle del Proyecto</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+  <style>
+    .home-page { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+    .home-card { width: 100%; max-width: 600px; background: #fff; border-radius: 20px; padding: 32px; box-shadow: 0 10px 30px rgba(31, 38, 135, 0.12); border: 1px solid rgba(202, 196, 208, 0.4); text-align: left; }
+    .btn-secondary { background: #e3f2fd; color: #1c1b1f; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; display: inline-block; margin-bottom: 20px; border: 1px solid #cac4d0; }
+    .btn-secondary:hover { background: #d0e7f9; }
+  </style>
+</head>
+<body>
+  <main class="home-page">
+    <section class="home-card">
+      
+      <a href="{% url 'home' %}" class="btn-secondary">← Volver a Mis Proyectos</a>
+
+      <h1 style="color: #6750a4; margin-top: 0;">{{ proyecto.nombre }}</h1>
+      <p style="color: #49454f; font-size: 1.1rem;">{{ proyecto.descripcion|default:"Sin descripción" }}</p>
+      <hr style="border: 1px solid #efe7ff; margin: 20px 0;">
+
+      <div style="background: #f6f3fb; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+        <h3 style="margin-top: 0;">Añadir Tarea</h3>
+        <form method="POST">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit" class="btn-primary" style="width: 100%; min-height: 40px;">Guardar Tarea</button>
+        </form>
+      </div>
+
+      <h3>Tareas del proyecto</h3>
+      {% if tareas %}
+        <ul style="list-style: none; padding: 0;">
+          {% for tarea in tareas %}
+            <li style="padding: 12px; border-bottom: 1px solid #cac4d0; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <strong style="font-size: 1.1rem; color: {% if tarea.completada %}#8a8591; text-decoration: line-through;{% else %}#1c1b1f;{% endif %}">
+                  {{ tarea.titulo }}
+                </strong>
+                <p style="margin: 4px 0 0 0; font-size: 0.9rem; color: #49454f;">{{ tarea.descripcion }}</p>
+              </div>
+              <div>
+                {% if tarea.completada %}
+                  <span style="background: #146c2e; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem;">Completada</span>
+                {% else %}
+                  <span style="background: #b3261e; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem;">Pendiente</span>
+                {% endif %}
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p style="color: #8a8591;">No hay tareas en este proyecto. ¡Agrega la primera!</p>
+      {% endif %}
+
+    </section>
+  </main>
+</body>
+</html>

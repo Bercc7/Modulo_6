@@ -63,16 +63,47 @@
 </head>
 <body>
   <main class="home-page">
-    <section class="home-card">
+    <section class="home-card" style="max-width: 600px;">
       <h1>¡Hola, {{ user.username }}!</h1>
-      <p>Has iniciado sesión correctamente.</p>
-
-      <div class="home-user">
-        <p><strong>ID de sistema:</strong> {{ user.id }}</p>
-        <p><strong>Usuario:</strong> {{ user.username }}</p>
-        <p><strong>Correo:</strong> {{ user.email|default:"No registrado" }}</p>
+      
+      <div class="home-user" style="font-size: 0.9rem;">
         <p><strong>Último acceso:</strong> {{ user.last_login|date:"d/m/Y H:i" }}</p>
       </div>
+
+      <div style="background: #efe7ff; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: left;">
+        <h3 style="margin-top: 0; color: #6750a4;">Crear Nuevo Proyecto</h3>
+        <form method="POST">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit" class="btn-primary" style="width: 100%; min-height: 40px;">Guardar Proyecto</button>
+        </form>
+      </div>
+
+      <div style="text-align: left; margin-bottom: 20px;">
+        <h3 style="color: #49454f; border-bottom: 2px solid #cac4d0; padding-bottom: 8px;">Mis Proyectos</h3>
+        
+        {% if proyectos %}
+          <ul style="list-style: none; padding: 0;">
+            {% for proyecto in proyectos %}
+              <li style="background: #f6f3fb; padding: 15px; margin-bottom: 10px; border-radius: 8px; border-left: 4px solid #6750a4;">
+                <h4 style="margin: 0 0 5px 0;">
+                  <a href="{% url 'detalle_proyecto' proyecto.id %}" style="color: #6750a4; text-decoration: none;">{{ proyecto.nombre }}</a>
+                </h4>
+                <p style="margin: 0; font-size: 0.9rem; color: #49454f;">{{ proyecto.descripcion }}</p>
+                <small style="color: #8a8591;">Creado el: {{ proyecto.creado_en|date:"d/m/Y" }}</small>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p style="color: #8a8591; text-align: center; margin-top: 20px;">Aún no tienes proyectos. ¡Crea el primero arriba!</p>
+        {% endif %}
+      </div>
+
+      <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="logout-btn">Cerrar sesión</button>
+      </form>
+    </section>
 
       <form action="{% url 'logout' %}" method="post">
         {% csrf_token %}
